@@ -1,6 +1,16 @@
 import json
+import os
+if not os.path.exists("save.json"):
+    
+    a = open("save.json", "w")
+    
+    a.write("{\"inventory\": [], \"health\": 10, \"maxHealth\": 10, \"level\":1, \"position\":\"start\"}")
+    a.close()
+
+
 saveData = open("save.json")
 saveData = json.load(saveData)
+
 world = json.load(open("world.json"))
 
 
@@ -79,10 +89,4 @@ def Main():
 
         Main()
 
-    
-
-
-        
-
 Main()
-

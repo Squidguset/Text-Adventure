@@ -1,8 +1,36 @@
 import json
 saveData = open("save.json")
 saveData = json.load(saveData)
+world = json.load(open("world.json"))
+
+
+
+health = saveData["health"]
+maxhealth = saveData["maxHealth"]
+level = saveData["level"]
+position = saveData["position"]
+mode = "world"
+inventory = saveData["inventory"]
+
+# Gameplay Definitions
+
+def Heal(amount):
+    health =+ amount
+    if health < 0:
+        health = 0
+    if health > maxhealth:
+        health = maxhealth
+
+def Give(item):
+    inventory.append(item)
+
+
+
+
 def Init():
     file_path = "startMessage.txt"
+
+    
 
     try:
         # Open the file in read mode
@@ -15,39 +43,46 @@ def Init():
         print("Message file not found:", file_path)
     except IOError:
         print("Error reading message file:", file_path)
+
+
 Init()
+
 def Main():
-    lastInput = ""
-    lastInput = input()
-    if lastInput in globals() and (not('_' in lastInput) and (lastInput.lower() == lastInput) and (lastInput != "json")):
-        callFunc = globals()[lastInput]
-        callFunc()
+    global position
+
+    options = world[position]["options"]
+
+
+    #formatted = [option["name"] for option in options]
+    #formatted = "[" + "], [".join(formatted) + "]"
+    formatted = list(options.keys())
+    print("Choices:" + str(formatted))
+
+    
+
+    choice = options[input(">>>> ")]
+
+    if choice == "Description":
+        print("desc")
     else:
-        print("not a valid command")
-    if lastInput != "end":
+        position = choice["outcome"]
+        print(choice["onpick"])
+        
+
+        # Extra Functions
+        if "extra" in choice.keys() :
+            print(choice["extra"])
+                
+            
+        
+
+
         Main()
-# Command Definitions
-def heal():
-    saveData["health"] += 1
-    if saveData["health"] > saveData["maxHealth"]:
-        saveData["health"] = saveData["maxHealth"]
-def damage():
-    saveData["health"] -= 1
-    if saveData["health"] < 0:
-        saveData["health"] = 0
-def save():
-    saveConv = json.dumps(saveData)
-    with open("save.json", "w") as json_file:
-        json_file.write(saveConv)
-    print("Game Saved!")
-def end():
-    print("Goodbye")
-def info():
-    print(f"Health:{saveData["health"]}/{saveData["maxHealth"]}")
-def help():
-    print("Available Commands:")
-    for x in globals():
-        if (not('_' in x) and (x.lower() == x) and (x != "json")):
-            print(x.lower())
+
+    
+
+
+        
+
 Main()
 

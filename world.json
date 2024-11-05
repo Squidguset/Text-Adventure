@@ -1,0 +1,41 @@
+{
+    "start":{
+        "description":"This is the start!",
+        "options":{
+            "Left":{
+            "description":"Go left!",
+            "outcome":"Left",
+            "onpick":"You went left"
+            },
+            "Right":{
+            "description":"Go right!",
+            "outcome":"Right",
+            "onpick":"You went right"
+            }
+        }
+    },
+    "Right":{
+        "description":"Right",
+        "options":{
+            "Go back":{
+            "description":"Go back to the start",
+            "outcome":"start",
+            "onpick":"You went back"
+            }
+        }
+    },
+    "Left":{
+        "description":"Left",
+        "options":{
+            "Go back":{
+            "description":"Go back to the start",
+            "outcome":"start",
+            "onpick":"You went back",
+            "extra":{
+                "Heal":1,
+                "Give":"apple"
+            }
+            }
+        }
+    }
+}

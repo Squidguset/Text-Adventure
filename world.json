@@ -31,10 +31,10 @@
             "description":"Go back to the start",
             "outcome":"start",
             "onpick":"You went back",
-            "extra":{
-                "Heal":1,
-                "Give":"apple"
-            }
+            "extra":[
+                {"type":"heal","amount":1},
+                {"type":"give","item":"apple"}
+            ]
             }
         }
     }

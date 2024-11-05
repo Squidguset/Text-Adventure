@@ -39,8 +39,7 @@ def Heal(amount):
     if health > maxhealth:
         health = maxhealth
 
-def Give(item):
-    inventory.append(item)
+
 
 
 
@@ -78,23 +77,36 @@ def Main():
 
     
 
-    choice = options[input(">>>> ")]
+    choice = input(">>>> ")
+    if choice in options.keys():
+        choice = options[choice]
 
-    if choice == "Description":
-        print("desc")
+
+        if choice == "Description":
+            print("desc")
+        else:
+            position = choice["outcome"]
+            print(choice["onpick"])
+
+
+            # Extra Functions
+            if "extra" in choice.keys() :
+                for x in choice["extra"]:
+                    extras(x)
+                    
     else:
-        position = choice["outcome"]
-        print(choice["onpick"])
-        
-
-        # Extra Functions
-        if "extra" in choice.keys() :
-            print(choice["extra"])
+        print("Not an option!!!! (or you messed up typing it :[)")
                 
             
-        
+    Main()
 
-
-        Main()
+def extras(data):
+    match data["type"]:
+        case "heal":
+            Heal(data["amount"])
+        case "give":
+            inventory.append(data["item"])
+        case _:
+            pass
 
 Main()

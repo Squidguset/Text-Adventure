@@ -12,6 +12,7 @@ if not os.path.exists("save.json"):
             "position":"start"
             }
         a.write(json.dumps(basesave))
+        a.close
 
     
 
@@ -79,8 +80,19 @@ def Main():
 
     choice = input(">>>> ")
     if choice in options.keys():
+        # if choice.isnumeric:
+        #     choice = int(choice) - 1
+        #     choice = (list(options.keys())[choice])
+        
+            
         choice = options[choice]
 
+        if "conditionals" in choice.keys():
+                for x in choice["conditionals"]:
+                    if not conditions(x):
+                        print("Conditions not met!")
+                        Main()
+                        break
 
         if choice == "Description":
             print("desc")
@@ -93,10 +105,11 @@ def Main():
             if "extra" in choice.keys() :
                 for x in choice["extra"]:
                     extras(x)
+            
                     
     else:
-        print("Not an option!!!! (or you messed up typing it :[)")
-                
+        print("Not an option!!!! (or you messed up typing it :/)")
+        print(len(list(options.keys())))
             
     Main()
 
@@ -106,6 +119,20 @@ def extras(data):
             Heal(data["amount"])
         case "give":
             inventory.append(data["item"])
+            print(inventory)
+        case "take":
+            inventory.remove(data["item"])
+        case _:
+            pass
+
+def conditions(data):
+    match data["type"]:
+        case "has":
+            return inventory.count(data["item"]) >= data["count"]
+        case "healthatleast":
+            return health >= data["amount"]
+        case "healthequal":
+            return health == data["amount"]
         case _:
             pass
 

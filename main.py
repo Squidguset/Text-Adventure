@@ -68,12 +68,28 @@ Init()
 def Main():
     global position
 
+    formatted = []
+
     options = world[position]["options"]
 
-
-    #formatted = [option["name"] for option in options]
-    #formatted = "[" + "], [".join(formatted) + "]"
-    formatted = list(options.keys())
+    for x in options.keys():
+        if "visibility" in options[x].keys():
+            match options[x]["visibility"]:
+                case "visible":
+                    formatted.append(x)
+                case "whenmet":
+                    for y in options[x]["conditionals"]:
+                        if not conditions(y):
+                            break
+                        formatted.append(x)
+                case "never":
+                    break
+                case _:
+                    break
+        else:    
+            formatted.append(x)
+            
+   
     print("Choices:" + str(formatted))
 
     

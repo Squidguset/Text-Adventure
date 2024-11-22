@@ -16,13 +16,13 @@
                 "description":"Apple",
                 "outcome":"Apple",
                 "onpick":"Apple",
+                "visibility":"whenmet",
                 "conditionals":[
                     {"type":"has","item":"apple","count":1}
                 ],
                 "extra":[
                     {"type":"take","item":"apple"}
-                ],
-                "conditionalhandling":"whenmet"
+                ] 
             }
         }
     },

@@ -1,5 +1,6 @@
 import json
 import os
+import math
 
 if not os.path.exists("save.json"):
 
@@ -9,7 +10,10 @@ if not os.path.exists("save.json"):
             "health": 10, 
             "maxHealth": 10, 
             "level":1, 
-            "position":"start"
+            "position":"start",
+            "SavedExtras":{
+                
+            }
             }
         a.write(json.dumps(basesave))
         a.close
@@ -30,11 +34,18 @@ level = saveData["level"]
 position = saveData["position"]
 mode = "world"
 inventory = saveData["inventory"]
+Values = {}
+specials = {}
+#SavedExtras = saveData["SavedExtras"]
+SavedExtras = {}
+
 
 # Gameplay Definitions
 
 def Heal(amount):
-    health =+ amount
+    global health
+    global maxhealth
+    health = health + amount
     if health < 0:
         health = 0
     if health > maxhealth:
@@ -88,9 +99,16 @@ def Main():
                     break
         else:    
             formatted.append(x)
-            
+
+    formatted = ("Choices:" + str(formatted))
+
+    da = (len(formatted)-7)/2
+
+    print(f"<{"-"*math.floor(da)}< ♦ >{"-"*math.ceil(da)}>")         
    
-    print("Choices:" + str(formatted))
+    
+
+    print(formatted)
 
     
 
@@ -110,34 +128,58 @@ def Main():
                         Main()
                         break
 
-        if choice == "Description":
-            print("desc")
-        else:
-            position = choice["outcome"]
-            print(choice["onpick"])
+
+        position = choice["outcome"]
+        print(choice["onpick"])
 
 
-            # Extra Functions
-            if "extra" in choice.keys() :
-                for x in choice["extra"]:
-                    extras(x)
+        # Extra Functions
+        if "extra" in choice.keys() :
+            for x in choice["extra"]:
+                extras(x)
             
                     
     else:
-        print("Not an option!!!! (or you messed up typing it :/)")
-        print(len(list(options.keys())))
+        
+        match choice.lower():
+            case "help":
+                aa = open("help.txt","r")
+                print(aa.read())
+                aa.close 
+            case "inventory":
+                print(inventory)
+            case "status":
+                print(f"Health:{health}/{maxhealth},Level:{level}")
+            case _:
+                print("Not an option!!!! (or you messed up typing it)")
+
+        
             
     Main()
 
 def extras(data):
     match data["type"]:
         case "heal":
+            global Heal
             Heal(data["amount"])
         case "give":
             inventory.append(data["item"])
-            print(inventory)
         case "take":
             inventory.remove(data["item"])
+
+
+        case "set variable":
+            global specials
+            specials[data["key"]] = data["value"]
+
+
+
+        case "set saved variable":
+            global SavedExtras
+            SavedExtras[data["key"]] = data["value"]
+
+
+
         case _:
             pass
 
@@ -149,6 +191,10 @@ def conditions(data):
             return health >= data["amount"]
         case "healthequal":
             return health == data["amount"]
+        case "variable matches":
+            return specials[data["key"]] == data["value"]
+        case "variable mismatches":
+            return not specials[data["key"]] == data["value"]
         case _:
             pass
 

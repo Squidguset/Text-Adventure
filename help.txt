@@ -1,0 +1,4 @@
+        commands
+help                 prints this
+status  shows player information
+inventory       prints inventory

@@ -3,14 +3,18 @@
         "description":"This is the start!",
         "options":{
             "Left":{
-            "description":"Go left!",
-            "outcome":"Left",
-            "onpick":"You went left"
+                "description":"Go left!",
+                "outcome":"Left",
+                "onpick":"You went left",
+                "extra":[
+                    {"type":"set variable","key":"A","value":20},
+                    {"type":"heal","amount":-5}
+                ]
             },
             "Right":{
-            "description":"Go right!",
-            "outcome":"Right",
-            "onpick":"You went right"
+                "description":"Go right!",
+                "outcome":"Right",
+                "onpick":"You went right"
             },
             "Apple":{
                 "description":"Apple",

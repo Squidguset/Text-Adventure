@@ -2,3 +2,4 @@
 
 11/19/2024: added conditions for movement
 11/22/2024: added visibility controls for paths
+12/08/2024: added more conditionals, not conditionals, new file types 

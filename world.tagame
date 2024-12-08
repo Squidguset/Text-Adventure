@@ -1,0 +1,89 @@
+{
+"world":{
+        "start":{
+            "description":"This is the start!",
+            "options":{
+                "Left":{
+                    "description":"Go left!",
+                    "outcome":"Left",
+                    "onpick":"You went left",
+                    "extra":[
+                        {"type":"set variable","key":"A","value":20},
+                        {"type":"heal","amount":-5}
+                    ]
+                },
+                "Right":{
+                    "description":"Go right!",
+                    "outcome":"Right",
+                    "onpick":"You went right"
+                },
+                "Apple":{
+                    "description":"Apple",
+                    "outcome":"Apple",
+                    "onpick":"Apple",
+                    "visibility":"whenmet",
+                    "conditionals":[
+                        {"type":"has","item":"apple","count":1}
+                    ],
+                    "extra":[
+                        {"type":"take","item":"apple"}
+                    ] 
+                },
+                "NoApple":{
+                    "description":"NoApple",
+                    "outcome":"NoApple",
+                    "onpick":"NoApple",
+                    "visibility":"whenmet",
+                    "conditionals":[
+                        {"type":"has","item":"apple","count":1,"not":true}
+                    ]
+                    
+                }
+            }
+        },
+        "Right":{
+            "description":"Right",
+            "options":{
+                "Go back":{
+                "description":"Go back to the start",
+                "outcome":"start",
+                "onpick":"You went back"
+                }
+            }
+        },
+        "Left":{
+            "description":"Left",
+            "options":{
+                "Go back":{
+                "description":"Go back to the start",
+                "outcome":"start",
+                "onpick":"You went back",
+                "extra":[
+                    {"type":"heal","amount":1},
+                    {"type":"give","item":"apple"}
+                ]
+                }
+            }
+        },
+        "Apple":{
+            "description":"Apple",
+            "options":{
+                "Go back":{
+                "description":"Go back to the start",
+                "outcome":"start",
+                "onpick":"You went back"
+                }
+            }
+        },
+        "NoApple":{
+            "description":"NoApple",
+            "options":{
+                "Go back":{
+                "description":"Go back to the start",
+                "outcome":"start",
+                "onpick":"You went back"
+                }
+            }
+        }
+    }
+}

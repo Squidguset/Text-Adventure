@@ -2,12 +2,34 @@ import json
 import os
 import math
 
-if not os.path.exists("save.json"):
+def loadGame():
+    global world
+    world = input("Game file: ")
+    if not os.path.exists(world):
+        print("Path Doesn't Exist!!!")
+        loadGame()
+    elif not os.path.splitext(world)[1] == ".tagame":
+        print("not a .tagame!!!!")
+        loadGame()
+    else:
+        world = json.loads(open(world).read())
+        world = world["world"]
 
-    with open("save.json", "w") as a:
+loadGame()
+
+
+save = input("Save Name: ")
+
+if not ".tasave" in save:
+    save = save + ".tasave"
+
+if not os.path.exists(save):
+
+    with open(save, "w") as a:
         basesave = {
+            "version":1,
             "inventory": [], 
-            "health": 10, 
+            "Health": 10, 
             "maxHealth": 10, 
             "level":1, 
             "position":"start",
@@ -21,35 +43,40 @@ if not os.path.exists("save.json"):
     
 
 
-saveData = open("save.json")
+saveData = open(save)
 saveData = json.load(saveData)
 
-world = json.load(open("world.json"))
+#world = json.load(open("world.json"))
 
 
-
-health = saveData["health"]
-maxhealth = saveData["maxHealth"]
-level = saveData["level"]
-position = saveData["position"]
-mode = "world"
 inventory = saveData["inventory"]
-Values = {}
-specials = {}
-#SavedExtras = saveData["SavedExtras"]
-SavedExtras = {}
+Values = saveData
+Values.pop("version",None)
+#Values.pop("inventory",None)
+
+mode = "world"
+
+SavedExtras = saveData["SavedExtras"]
+#SavedExtras = {}
+#health = saveData["health"]
+#maxhealth = saveData["maxHealth"]
+#level = saveData["level"]
+#position = saveData["position"]
+
+
+#specials = {}
 
 
 # Gameplay Definitions
 
 def Heal(amount):
-    global health
-    global maxhealth
-    health = health + amount
-    if health < 0:
-        health = 0
-    if health > maxhealth:
-        health = maxhealth
+    global Values
+    
+    Values["Health"] = Values["Health"] + amount
+    if Values["Health"] < 0:
+        Values["Health"] = 0
+    if Values["Health"] > Values["maxHealth"]:
+        Values["Health"] = Values["maxHealth"]
 
 
 
@@ -77,11 +104,11 @@ def Init():
 Init()
 
 def Main():
-    global position
+    global Values
 
     formatted = []
 
-    options = world[position]["options"]
+    options = world[Values["position"]]["options"]
 
     for x in options.keys():
         if "visibility" in options[x].keys():
@@ -129,7 +156,7 @@ def Main():
                         break
 
 
-        position = choice["outcome"]
+        Values["position"] = choice["outcome"]
         print(choice["onpick"])
 
 
@@ -147,9 +174,9 @@ def Main():
                 print(aa.read())
                 aa.close 
             case "inventory":
-                print(inventory)
+                print(Values["inventory"])
             case "status":
-                print(f"Health:{health}/{maxhealth},Level:{level}")
+                print(f"Health:{Values["Health"]}/{Values["maxHealth"]},Level:{Values["level"]}")
             case _:
                 print("Not an option!!!! (or you messed up typing it)")
 
@@ -158,19 +185,21 @@ def Main():
     Main()
 
 def extras(data):
+    global Values
     match data["type"]:
         case "heal":
             global Heal
             Heal(data["amount"])
         case "give":
-            inventory.append(data["item"])
+            Values["inventory"].append(data["item"])
         case "take":
-            inventory.remove(data["item"])
+            Values["inventory"].remove(data["item"])
 
 
         case "set variable":
-            global specials
-            specials[data["key"]] = data["value"]
+            
+            Values[data["key"]] = data["value"]
+            
 
 
 
@@ -186,16 +215,25 @@ def extras(data):
 def conditions(data):
     match data["type"]:
         case "has":
-            return inventory.count(data["item"]) >= data["count"]
-        case "healthatleast":
-            return health >= data["amount"]
-        case "healthequal":
-            return health == data["amount"]
-        case "variable matches":
-            return specials[data["key"]] == data["value"]
-        case "variable mismatches":
-            return not specials[data["key"]] == data["value"]
+            out = Values["inventory"].count(data["item"]) >= data["count"]
+        case "greater":
+            out = Values[data["key"]] > data["value"]
+        case "less":
+            out = Values[data["key"]] < data["value"]
+        case "greaterequal":
+            out = Values[data["key"]] >= data["value"]
+        case "lessequal":
+            out = Values[data["key"]] <= data["value"]
+        case "equal":
+            out = Values[data["key"]] == data["value"]
         case _:
             pass
+    if "not" in data:
+        if data["not"]:
+            return not out
+        else:
+            return out
+    else:
+        return out
 
 Main()

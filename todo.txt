@@ -1,0 +1,8 @@
+MAJOR (in order of importance):
+Battle System
+readme
+.tagame designer program
+
+MINOR:
+Move "start message" to .tagame
+customizable bar style (per .tagame)
